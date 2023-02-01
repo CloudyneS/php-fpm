@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bedrock
+  namespace: bedrock
+  labels:
+    application-name: bedrock
+    application-tier: fpm
+spec:
+  containers:
+  - name: nginx
+    env:
+      # - name: DATABASE_URL
+      #   valueFrom:
+      #     secretKeyRef:
+      #       name: bedrock-db-credentials
+      #       key: CONNECTION_STRING
+    
+      - name: WP_HOME
+        value: "https://azurefd-cdn.v3.nu"
+      - name: WP_SITEURL
+        value: "https://azurefd-cdn.v3.nu/wp"
+    image: cloudyne.azurecr.io/php:8-bedrock
+    imagePullPolicy: Always
+    ports:
+    - containerPort: 8123
+      name: fpm
+    # volumeMounts:
+    # - name: bedrock-storage
+    #   mountPath: /app
+  imagePullSecrets:
+  - name: cloudyneazurecr

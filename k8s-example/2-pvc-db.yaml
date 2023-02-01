@@ -1,0 +1,27 @@
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: bedrock-storage
+#   namespace: bedrock
+# spec:
+#   storageClassName: blob-fuse-retain
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 3Gi
+---
+apiVersion: kci.rocks/v1alpha1
+kind: Database
+metadata:
+  name: bedrock
+  namespace: bedrock
+spec:
+  instance: kincaid
+  secretName: bedrock-db-credentials
+  deletionProtected: true
+  backup:
+    enable: false
+    cron: ""
+  secretsTemplates:
+    CONNECTION_STRING: "mysql://{{ .UserName }}:{{ .Password }}@{{ .DatabaseHost }}/{{ .DatabaseName }}"
