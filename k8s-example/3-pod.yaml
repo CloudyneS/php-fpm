@@ -10,12 +10,11 @@ spec:
   containers:
   - name: nginx
     env:
-      # - name: DATABASE_URL
-      #   valueFrom:
-      #     secretKeyRef:
-      #       name: bedrock-db-credentials
-      #       key: CONNECTION_STRING
-    
+      - name: DATABASE_URL
+        valueFrom:
+          secretKeyRef:
+            name: bedrock-db-credentials
+            key: CONNECTION_STRING
       - name: WP_HOME
         value: "https://azurefd-cdn.v3.nu"
       - name: WP_SITEURL

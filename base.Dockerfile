@@ -1,19 +1,11 @@
 ARG ALPINE_VERSION=3.17
 ARG PHP_VERSION=8
-ARG BUILD_ENV=production
-ARG DEBUG_PACKAGES="nano bash net-tools wget"
-ARG ADD_COMPOSER="true"
 ARG FPM_LISTENER="0.0.0.0:8123"
 FROM alpine:${ALPINE_VERSION}
 
 LABEL Maintainer="Cloudyne Systems"
 LABEL Description="Lightweight PHP-FPM containers for Kubernetes based on Alpine Linux."
 LABEL Version="1.0"
-
-# # If debug is enabled, install the debug packages
-ARG BUILD_ENV
-ARG DEBUG_PACKAGES
-RUN if [ ${BUILD_ENV} = "debug" ]; then echo "Install debug packages: ${BUILD_ENV}" && apk add --no-cache ${DEBUG_PACKAGES}; fi
 
 # Set the working directory to /app and install application packages
 WORKDIR /app
@@ -49,6 +41,9 @@ RUN apk add --no-cache \
     php${PHP_VERSION}-sqlite3 \
     php${PHP_VERSION}-simplexml
     
+# Add composer
+ARG ADD_COMPOSER
+RUN curl -sS https://getcomposer.org/installer | php${PHP_VERSION} -- --install-dir=/usr/local/bin --filename=composer; 
 
 # Copy and configure FPM Pool
 ARG FPM_LISTENER
@@ -66,13 +61,6 @@ RUN chown -R nobody.nobody /app /var/log/php${PHP_VERSION} && \
     ln -sf /usr/bin/php${PHP_VERSION} /usr/bin/php && \
     ln -sf /usr/sbin/php-fpm${PHP_VERSION} /start
 
-# Add composer if enabled
-ARG ADD_COMPOSER
-RUN echo "Install Composer: ${INCLUDE_COMPOSER}" && if [ ${ADD_COMPOSER} = "true" ]; then \
-        curl -sS https://getcomposer.org/installer | \
-        php -- --install-dir=/usr/local/bin --filename=composer; \
-    fi
-
 # Switch to a non-root user
 USER nobody
 
@@ -82,7 +70,4 @@ EXPOSE 8123
 # Run the supervisor to start the services
 CMD ["/start", "-F"]
 
-ENV APPLICATION_PATH=/app \
-    PHP_ADDITIONAL_PACKAGES="" \
-    PHP_ADDITIONAL_OPTIONS="" \
-    INIT_COMMANDS=""
+ENV APPLICATION_PATH=/app

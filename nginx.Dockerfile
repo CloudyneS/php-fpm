@@ -1,7 +1,5 @@
 ARG PHP_VERSION=8
-ARG BUILD_ENV=production
-ARG DEBUG_PACKAGES="nano bash net-tools wget"
-FROM cloudyne.azurecr.io/php:${PHP_VERSION}-fpm
+FROM cloudyne.azurecr.io/php:${PHP_VERSION}
 
 LABEL Maintainer="Cloudyne Systems"
 LABEL Description="Lightweight PHP-FPM containers for Kubernetes based on Alpine Linux."
@@ -9,11 +7,6 @@ LABEL Version="1.0"
 
 # Switch to root user for installation
 USER root
-
-# Add any debug packages specified
-ARG BUILD_ENV
-ARG DEBUG_PACKAGES
-RUN if [ ${BUILD_ENV} = "debug" ]; then echo "Install debug packages: ${BUILD_ENV}" && apk add --no-cache ${DEBUG_PACKAGES}; fi
 
 # Install the main package used for Nginx and Supervisor
 RUN apk add --no-cache nginx supervisor
@@ -52,5 +45,4 @@ ENV APPLICATION_PATH=/app \
     PHP_ADDITIONAL_PACKAGES="" \
     PHP_ADDITIONAL_OPTIONS="" \
     NGINX_WORKER_CONNECTIONS=1024 \
-    NGINX_CUSTOM_5XX_ERROR_PAGE="" \
-    INIT_COMMANDS=""
+    NGINX_CUSTOM_5XX_ERROR_PAGE=""

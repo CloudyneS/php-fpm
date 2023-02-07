@@ -1,109 +1,77 @@
 version: "3.2"
 services:
-  php-7-fpm:
-    container_name: php-7-fpm
-    image: cloudyne.azurecr.io/php:7-fpm
-    build:
-      context: .
-      dockerfile: base.Dockerfile
-      args:
-        BUILD_ENV: debug
-        ALPINE_VERSION: 3.17
-        PHP_VERSION: 7
-        DEBUG_PACKAGES: nano bash net-tools wget
-  
-  php-8-fpm:
-    container_name: php-8-fpm
-    image: cloudyne.azurecr.io/php:8-fpm
-    build:
-      context: .
-      dockerfile: base.Dockerfile
-      args:
-        BUILD_ENV: debug
-        ALPINE_VERSION: 3.17
-        PHP_VERSION: 8
-        DEBUG_PACKAGES: nano bash net-tools wget
 
-  php-fpm7-debug:
-    container_name: phpdebug7-fpm
-    image: phpdebug:7-fpm
+  # PHP-FPM Only
+  php8:
+    container_name: php8
+    image: cloudyne.azurecr.io/php:8
     build:
       context: .
       dockerfile: base.Dockerfile
       args:
-        BUILD_ENV: debug
-        ALPINE_VERSION: 3.17
-        PHP_VERSION: 7
-        DEBUG_PACKAGES: nano bash net-tools wget
-  
-  php-fpm8-debug:
-    container_name: phpdebug8-fpm
-    image: phpdebug:8-fpm
-    build:
-      context: .
-      dockerfile: base.Dockerfile
-      args:
-        BUILD_ENV: debug
         ALPINE_VERSION: 3.17
         PHP_VERSION: 8
-        DEBUG_PACKAGES: nano bash net-tools wget
-  
-  php-7-nginx:
-    container_name: php-7-nginx
-    image: cloudyne.azurecr.io/php:7-nginx
-    build:
-      context: .
-      dockerfile: nginx.Dockerfile
-      args:
-        BUILD_ENV: debug
-        ALPINE_VERSION: 3.17
-        PHP_VERSION: 7
-        DEBUG_PACKAGES: nano bash net-tools wget
-  
-  php-8-nginx:
-    container_name: php-8-nginx
+    ports:
+      - 8123:8123
+
+  # PHP-FPM and Nginx
+  php8-nginx:
+    container_name: php8-nginx
     image: cloudyne.azurecr.io/php:8-nginx
     build:
       context: .
       dockerfile: nginx.Dockerfile
       args:
-        BUILD_ENV: debug
         ALPINE_VERSION: 3.17
         PHP_VERSION: 8
-        DEBUG_PACKAGES: nano bash net-tools wget
-
-  php-nginx7-debug:
-    container_name: phpdebug7-nginx
-    image: phpdebug:7-nginx
-    build:
-      context: .
-      dockerfile: nginx.Dockerfile
-      args:
-        BUILD_ENV: debug
-        ALPINE_VERSION: 3.17
-        PHP_VERSION: 7
-        DEBUG_PACKAGES: nano bash net-tools wget
+    ports:
+      - 8080:8080
   
-  php-nginx8-debug:
-    container_name: phpdebug8-nginx
-    image: phpdebug:8-nginx
-    build:
-      context: .
-      dockerfile: nginx.Dockerfile
-      args:
-        BUILD_ENV: debug
-        ALPINE_VERSION: 3.17
-        PHP_VERSION: 8
-        DEBUG_PACKAGES: nano bash net-tools wget
-  
-  bed:
-    container_name: bed
+  # Roots Bedrock
+  php8-bedrock:
+    container_name: php8-bedrock
     image: cloudyne.azurecr.io/php:8-bedrock
     build:
       context: .
       dockerfile: bedrock.Dockerfile
       args:
         PHP_VERSION: 8
-        SRC_IMAGE_TYPE: fpm
+        SRC_IMAGE_TYPE: -nginx
     ports:
       - 8080:8080
+  
+  # Codeigniter4
+  php8-codeigniter:
+    container_name: php8-codeigniter
+    image: cloudyne.azurecr.io/php:8-codeigniter
+    build:
+      context: .
+      dockerfile: codeigniter.Dockerfile
+      args:
+        PHP_VERSION: 8
+        SRC_IMAGE_TYPE: -nginx
+    ports:
+      - 8080:8080
+  
+  # Codeigniter4
+  php8-phpmyadmin:
+    container_name: php8-phpmyadmin
+    image: cloudyne.azurecr.io/php:8-phpmyadmin
+    build:
+      context: .
+      dockerfile: phpmyadmin.Dockerfile
+      args:
+        PHP_VERSION: 8
+        SRC_IMAGE_TYPE: -nginx
+    ports:
+      - 8080:8080
+  
+  # Init Container
+  php8-init:
+    container_name: php8-init
+    image: cloudyne.azurecr.io/php:8-init
+    build:
+      context: .
+      dockerfile: init.Dockerfile
+      args:
+        PHP_VERSION: 8
