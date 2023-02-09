@@ -29,7 +29,21 @@ RUN chown -R nobody.nobody /init && \
 USER nobody
 
 CMD ["sh", "-c", "/usr/bin/python3 /init/controller.py"]
-    
+
+    # Set default plugins to run on init
+    # Add any aditional plugins
+ENV RUN_COMPONENTS="codeigniter/Codeigniter:run,composer/Composer:run,database/Database:run,filesystem/Filesystem:run,wordpress/Wordpress:run"
+
+    # Filesystem options
+    # Check if folder exists
+ENV FS_CHECK_PATH="false" \
+    # Exit if folder doesn't exist
+    FS_EXIT_ONFAIL_CHECK_PATH="false" \
+    # False or path/URL to zip file
+    FS_FILL_FILESYSTEM_ONFAIL_CHECK_PATH="false" \
+    # Cleanup directories after all other jobs are done (false or comma-separated list of directories to delete)
+    FS_CLEANUP="/var/cache/apk"
+
     # MySQL Connection string for database connection
 ENV DB_CONNECTION_STRING="" \
     # Check if above credentials can make a connection to DB (false or DB Name)
@@ -43,11 +57,11 @@ ENV DB_CONNECTION_STRING="" \
     # Exit if table doesn't exist
     DB_EXIT_ONFAIL_CHECK_TABLE="false" \
     # If table check fails, upload a file (false or path to file)
-    DB_INSERT_ONFAIL_CHECK_TABLE="false" \
-    #
+    DB_INSERT_ONFAIL_CHECK_TABLE="false"
+
     # Composer
     # Run Composer
-    COMPOSER_RUN="false" \
+ENV COMPOSER_RUN="false" \
     # Run Composer Command
     COMPOSER_RUN_COMMAND="install" \
     # Composer.json file path
@@ -55,21 +69,21 @@ ENV DB_CONNECTION_STRING="" \
     # Args to pass to composer
     COMPOSER_RUN_ARGS="--no-dev" \
     # Exit on failure
-    COMPOSER_EXIT_ONFAIL="true" \
-    #
+    COMPOSER_EXIT_ONFAIL="true"
+ 
     # WP-CLI/Bedrock/Wordpress
     # Path to app root for Wordpress/Bedrock
-    WP_CONFIG_PATH="/app" \
+ENV WP_CONFIG_PATH="/app" \
     # Check if the database is a valid Wordpress database
     WP_CHECK_DB_WORKS="false" \
     # Exit if connection check fails
     WP_EXIT_ONFAIL_CHECK_DB_WORKS="false" \
     # Import file if check fails (false or path to file)
-    WP_IMPORT_ONFAIL_CHECK_DB_WORKS="false" \
-    #
+    WP_IMPORT_ONFAIL_CHECK_DB_WORKS="false"
+
     # Codeigniter
     # Codeigniter base path
-    CI_BASE_PATH="" \
+ENV CI_BASE_PATH="" \
     # Create migrations for Codeigniter
     CI_MAKE_MIGRATIONS="false" \
     # Apply migrations for Codeigniter
