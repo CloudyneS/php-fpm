@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  php8-init:
+    stdin_open: true
+    tty: true
+    container_name: init
+    image: cloudyne.azurecr.io/php:8-init
+    build:
+      context: .       
+      dockerfile: init.Dockerfile
+      args:
+        PHP_VERSION: 8
+    volumes:
+      - ./init-service:/init
+      - ./test.zip:/mnt/test.zip
+    environment:
+      # RUN_COMPONENTS: "filesystem/Filesystem:run"
+      # ---
+      # FS_CHECK_PATH: "/tmp/somepath"
+      # FS_CHECK_PATH_TYPE: "DIR"
+      # FS_CHECK_ACTION_ONFAIL: "CREATEDIR"
+      # ---
+      # FS_FILL_PATH: "/tmp/somepath"
+      # ---
+      # FS_FILL_PATH_FROM: GIT
+      # FS_FILL_PATH_DATA: "https://github.com/scheiblingco/code-pypack.git@@main"
+      # ---
+      # FS_FILL_PATH_FROM: ARCHIVE_URL
+      # FS_FILL_EMPTY_PATH_ONLY: "false"
+      # FS_FILL_PATH_DATA: "https://github.com/scheiblingco/code-pypack/archive/refs/heads/main.zip"
+      # ---
+      # FS_FILL_PATH_FROM: ARCHIVE_LOCAL
+      # FS_FILL_EMPTY_PATH_ONLY: "true"
+      # FS_FILL_PATH_DATA: "/mnt/test.zip"
+      RUN_COMPONENTS: "database/MySQL:run"
